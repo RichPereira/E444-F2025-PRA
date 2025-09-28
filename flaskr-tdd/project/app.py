@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+import os
 
 from flask import Flask, g, render_template, request, session, \
                   flash, redirect, url_for, abort, jsonify
@@ -83,6 +84,13 @@ def delete_entry(post_id):
         result = {'status': 0, 'message': repr(e)}
     return jsonify(result)
 
+@app.route('/search/', methods=['GET'])
+def search():
+    query = request.args.get("query")
+    entries = db.session.query(models.Post)
+    if query:
+        return render_template('search.html', entries=entries, query=query)
+    return render_template('search.html')
 
 if __name__ == "__main__":
     
