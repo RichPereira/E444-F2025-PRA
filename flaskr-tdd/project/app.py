@@ -18,6 +18,12 @@ SECRET_KEY = "change_me"
 SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(basedir).joinpath(DATABASE)}'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+url = os.getenv('DATABASE_URL', f'sqlite:///{Path(basedir).joinpath(DATABASE)}')
+
+if url.startswith("postgres://"):
+    url = url.replace("postgres://", "postgresql://", 1)
+
+SQLALCHEMY_DATABASE_URI = url
 
 # create and initialize a new Flask app
 app = Flask(__name__)
@@ -27,6 +33,9 @@ app.config.from_object(__name__)
 db = SQLAlchemy(app)
 
 from project import models
+
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -105,8 +114,8 @@ def search():
     return render_template('search.html')
 
 if __name__ == "__main__":
-    
-    port = int(os.environ.get("PORT", 4000))
-    app.run(host="0.0.0.0", port=port)
+    app.run()
+    # port = int(os.environ.get("PORT", 4000))
+    # app.run(host="0.0.0.0", port=port)
 
 
