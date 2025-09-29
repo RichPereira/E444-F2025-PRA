@@ -65,16 +65,20 @@
       {% endif %}
 
       <br />
+      {% set nonempty_entries = entries | selectattr("text") | list %}
 
+      {% if nonempty_entries %}
       <ul class="entries">
-        {% for entry in entries %}
-        <li class="entry">
-          <h2 id="{{ entry.id }}">{{ entry.title }}</h2>
-          {{ entry.text|safe }}
-        </li>
-        {% else %}
-        <li><em>No entries yet. Add some!</em></li>
-        {% endfor %}
+          {% for entry in nonempty_entries %}
+          <li class="entry">
+              <h2 id="{{ entry.id }}">{{ entry.title }}</h2>
+              {{ entry.text|safe }}
+          </li>
+          {% endfor %}
+      </ul>
+      {% else %}
+      <p>No entries yet. Add some!</p>
+      {% endif %}
       </ul>
     </div>
     <script
